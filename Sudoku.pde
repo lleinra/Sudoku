@@ -86,18 +86,17 @@ void draw() {
   } else {//if board is done
     if (board.missingCells.isEmpty()) {
       board.removeRandomNumbers(difficulty.hard);
-      board.cellStack = new Stack<Cell>();
+      board.cellStack.clear();
     } else {
       if (board.isSolving) {
-        if (board.isInstantSolve) {
+        if (board.currentCell == null) {
           board.currentCell = board.missingCells.get(0);
+        }
+        if (board.isInstantSolve) {
           while (board.currentCell != null) {
             board.solve();
           }
         } else {
-          if (board.currentCell == null) {
-            board.currentCell = board.missingCells.get(0);
-          }
           board.solve();
           delay(25);
         }
@@ -110,7 +109,7 @@ void draw() {
 void mousePressed() {
   if (board.isDone) {
     for (Cell cell : board.missingCells) {
-      if (cell.isClicked(mouseX, mouseY)) {//if one of missing cells is clicked
+      if (cell.isClicked()) {//if one of missing cells is clicked
         if (cell == changingValueCell) {//and if that cell is the cell currently being changed
           changingValueCell = null;
         } else {
@@ -119,15 +118,17 @@ void mousePressed() {
         return;
       }
     }
-    if (solveBtn.isClicked(mouseX, mouseY)) {
+    if (solveBtn.isClicked()) {
       if (board.missingCells.get(board.missingCells.size() - 1).value != 0) {
         board.resetMissingCells();
       }
       board.isSolving = board.isSolving == true ? false : true;
       return;
     }
-    if (instantSolveBtn.isClicked(mouseX, mouseY)) {
-      board.resetMissingCells();
+    if (instantSolveBtn.isClicked()) {
+      if (board.missingCells.get(board.missingCells.size() - 1).value != 0) {
+        board.resetMissingCells();
+      }
       board.isSolving = true;
       board.isInstantSolve = true;
       return;
@@ -175,7 +176,7 @@ void mousePressed() {
       return;
     }
   }
-  if (toggleBtn.isClicked(mouseX, mouseY)) {
+  if (toggleBtn.isClicked()) {
     //update toggle button and if board is being changed
     changingValueCell = null;
     if (board.isChanging) {
@@ -186,12 +187,12 @@ void mousePressed() {
       board.isChanging = true;
     }
   }
-  if (refreshBtn.isClicked(mouseX, mouseY)) {
+  if (refreshBtn.isClicked()) {
     //refresh missing cells
     board.resetMissingCells();
     board.currentCell = null;
   }
-  if (validityBtn.isClicked(mouseX, mouseY)) {
+  if (validityBtn.isClicked()) {
     if (!board.isDone) {
       return;
     }
@@ -204,7 +205,7 @@ void mousePressed() {
       return;
     }
   }
-  if (submitBtn.isClicked(mouseX, mouseY)) {
+  if (submitBtn.isClicked()) {
     board.highlightedCells.clear();
     board.validateAnswer();
     Boolean hasWrongAnswer = board.missingCells.isEmpty() ? true : false;
@@ -220,16 +221,16 @@ void mousePressed() {
       println("wrong");
     }
   }
-  if (restartBtn.isClicked(mouseX, mouseY)) {
+  if (restartBtn.isClicked()) {
     setup();
   }
-  if (generateBtn.isClicked(mouseX, mouseY)) {
+  if (generateBtn.isClicked()) {
     if (board.isDone) {
       setBoard();
     }
     toggleStartButton();
   }
-  if (instantGenBtn.isClicked(mouseX, mouseY)) {
+  if (instantGenBtn.isClicked()) {
     if (board.isDone) {
       setBoard();
     }
@@ -256,7 +257,7 @@ Cell getClickedCell() {
   for (int i = 0; i < 9; i++) {
     for (int j = 0; j < 9; j++) {
       Cell cell = board.cells[i][j];
-      if (cell.isClicked(mouseX, mouseY)) {
+      if (cell.isClicked()) {
         return cell;
       }
     }
