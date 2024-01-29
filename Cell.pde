@@ -30,7 +30,9 @@ class Cell {
     return value;
   }
 
-  Boolean isClicked(int x, int y) {
+  Boolean isClicked() {
+    int x = mouseX;
+    int y = mouseY;
     return this.x < x && this.x + RAD > x && this.y < y && this.y + RAD > y;
   }
 
