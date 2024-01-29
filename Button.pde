@@ -13,7 +13,9 @@ class Button {
     this.txtSize = txtSize;
   }
 
-  Boolean isClicked(int x, int y) {
+  Boolean isClicked() {
+    int x = mouseX;
+    int y = mouseY;
     return this.x < x && this.x + 250 > x && this.y < y && this.y + 75 > y;
   }
 
